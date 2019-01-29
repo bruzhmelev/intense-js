@@ -100,8 +100,9 @@
           15. Команда console.log('cb1') удаляется из стека вызовов. ![рис](https://i.imgur.com/25AS2IK.png)
           16. Функция cb1 удаляется из стека вызовов. ![рис](https://i.imgur.com/BXnVbnT.png)
       - gif. ![Как работает callback queue](https://i.imgur.com/BQamRr1.gif)
-      - В них можно найти рекомендацию по использованию команды setTimeout(callback, 0). Теперь вы знаете, как работает цикл событий и что происходит при вызове setTimeout. Учитывая это, вполне очевидно то, что вызов setTimeout со вторым аргументом, равным 0, просто откладывает вызов коллбэка до момента очищения стека вызовов. 
+      - Часто при объяснении асинхронного программирования на JS рекомендуют использовать команду setTimeout(callback, 0). Теперь вы знаете, как работает цикл событий и что происходит при вызове setTimeout. Учитывая это, вполне очевидно то, что вызов setTimeout со вторым аргументом, равным 0, просто откладывает вызов коллбэка до момента очищения стека вызовов. 
       - На месте setTimeout может быть любой другой метод из WebAPI браузера.
+      - Обзорно про WebAPI браузера https://developer.mozilla.org/ru/docs/Learn/JavaScript/Client-side_web_APIs/Introduction#%D0%A0%D0%B0%D1%81%D0%BF%D1%80%D0%BE%D1%81%D1%82%D1%80%D0%B0%D0%BD%D1%91%D0%BD%D0%BD%D1%8B%D0%B5_API_%D0%B1%D1%80%D0%B0%D1%83%D0%B7%D0%B5%D1%80%D0%B0
       - Пример
         - Итак, например, когда ваша программа выполняет Ajax-запрос для загрузки каких-то данных с сервера, вы пишете команду для записи этих данных в переменную response внутри коллбэка, и JS-движок сообщает окружению: «Послушай, я собираюсь приостановить выполнение программы, но когда ты закончишь выполнять этот сетевой запрос и получишь какие-то данные, пожалуйста, вызови этот коллбэк».
         - Затем браузер устанавливает прослушиватель, ожидающий ответ от сетевой службы, и когда у него есть что-то, что можно возвратить в программу, выполнившую запрос, он планирует вызов коллбэка, добавляя его в Callback Queue.
@@ -125,6 +126,48 @@
       - Существует спецификация Web Workers, которая позволяет запускать дополнительные JavaScript-процессы(workers). Они могут обмениваться сообщениями с главным процессом, но у них свои переменные, и работают они также сами по себе. Такие дополнительные процессы не имеют доступа к DOM, поэтому они полезны, преимущественно, при вычислениях, чтобы загрузить несколько ядер/процессоров одновременно.
 
   - Промисы, в сравнении с callback.
+    - Как выглядит асинхронный код на колбеках. ![code](https://i.imgur.com/96vwh9T.png)
+      ```js
+      listen('click', function (e){
+        setTimeout(function(){
+          ajax('https://api.example.com/endpoint', function (text){
+            if (text == "hello") {
+              doSomething();
+            }else if (text == "world") {
+              doSomethingElse();
+            }
+          });
+        }, 500);
+      });
+      ```
+      - 
+      ```js
+      listen('click', function (e) {
+        
+      // ..
+      });
+      ```
+      - 
+      ```js
+      setTimeout(function(){
+          // ..
+      }, 500);
+      ```
+      - 
+      ```js
+      ajax('https://api.example.com/endpoint', function (text){
+          // ..
+      });
+      ```
+      - 
+      ```js
+      if (text == "hello") {
+          doSomething();
+      }
+      else if (text == "world") {
+          doSomethingElse();
+      }
+      ```
     - Promise – предоставляют удобный способ организации асинхронного кода.
     - Promise – это специальный объект, который содержит своё состояние. Вначале pending («ожидание»), затем – одно из: fulfilled («выполнено успешно») или rejected («выполнено с ошибкой»).
       - ![ожидает-выполненно](https://i.imgur.com/9oNHU4h.png)
@@ -155,8 +198,7 @@
     - Почитать самостоятельно.
       - Проглатывание исключений, Обработка неперехваченных исключений
     - Источники.
-      - https://learn.javascript.ru/promise (Просто для общего понимания)
-      - Цепочки промисов https://learn.javascript.ru/promise#tsepochki-promisov
+      - https://learn.javascript.ru/promise (Просто)
       - https://habr.com/ru/company/ruvds/blog/340508/ (Промисы, Проглатывание исключений, Обработка неперехваченных исключений, 5 аргументов почему async/await вместо промисов)
   
   - ES8: async / await
@@ -199,11 +241,8 @@
       - DOM нужен для того, чтобы манипулировать страницей – читать информацию из HTML, создавать и изменять элементы.
       - У элементов DOM есть свойства и методы, которые позволяют изменять их.
     - Поиск: getElement* и querySelector* и не только
-      - document.getElementById или просто id - Если элементу назначен специальный атрибут id, то можно получить его прямо по переменной с именем из значения id.
-      - общепринятой практикой является доступ к элементу вызовом document.getElementById("идентификатор")
         - ![getElementById](https://i.imgur.com/L5VFk8V.png)
-      - По стандарту значение id должно быть уникально, то есть в документе может быть только один элемент с данным id
-      - Также есть 
+      - Основные методы поиска
         - getElementsByTagName - ищет все элементы с заданным тегом tag внутри элемента elem и возвращает их в виде списка.
         - document.getElementsByName - позволяет получить все элементы с данным атрибутом name.
         - getElementsByClassName - возвращает коллекцию элементов с классом className
@@ -215,7 +254,7 @@
           - ![6 основных методов поиска](https://i.imgur.com/qXVjVLY.png)
         - Практика показывает, что в 95% ситуаций достаточно querySelector/querySelectorAll. Хотя более специализированные методы getElement* работают чуть быстрее, но разница в миллисекунду-другую редко играет роль.
         - Если нужно найти один элемент используйте `querySelector()`, а не `querySelectorAll(...)[0]`, т.к. querySelectorAll будет искать до конца документа и потом только выберет первый элемент. А querySelector остановится на первом.
-      - Изменение
+      - Изменение и манипуляция
         ```js
             parent.appendChild(newChild);
             parent.removeChild(child);
@@ -463,6 +502,7 @@
   - Просто про DOM https://learn.javascript.ru/document
   - Почитать про DOM-полифилы https://learn.javascript.ru/dom-polyfill
 
+
 - Важно знать. Что ещё почитать в порядке важности:
   - Промисы, подробнее.
   - AJAX(XMLHttpRequest) и fetch.
@@ -490,6 +530,9 @@
     ```
     - Статья, про то, что конструктор промиса и executor function вызываются синхронно https://www.bennadel.com/blog/3296-the-es6-promise-constructor-and-its-executor-function-are-invoked-synchronously.htm
   - Контекст вызова в FunctionExpression, ArrowFunction. Пример с setTimeout с потерей контекста.
+  - Как сделать тяжелую операцию как (making huge calculations like over a 100 million for-loop iteration is somewhat slow) без блокировки.
+  - Task Queue, Render Queue https://medium.com/@siddharthac6/javascript-execution-of-synchronous-and-asynchronous-codes-40f3a199e687
+  - Что будет если вызвать тяжелую функциб внутри async функции, но без await
 
 - Хочется добавить
   - Сравнение callback -> promise -> async/await
